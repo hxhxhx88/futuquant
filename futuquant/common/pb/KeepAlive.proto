@@ -1,6 +1,8 @@
 syntax = "proto2";
 package KeepAlive;
 
+option go_package = "github.com/hxhxhx88/futuquant/pb";
+
 import "Common.proto";
 
 message C2S

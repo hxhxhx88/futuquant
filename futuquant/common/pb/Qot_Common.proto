@@ -1,6 +1,8 @@
 syntax = "proto2";
 package Qot_Common;
 
+option go_package = "github.com/hxhxhx88/futuquant/pb";
+
 import "Common.proto";
 
 enum QotMarket

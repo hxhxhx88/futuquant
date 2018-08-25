@@ -1,6 +1,8 @@
 syntax = "proto2";
 package Trd_GetAccList;
 
+option go_package = "github.com/hxhxhx88/futuquant/pb";
+
 import "Common.proto";
 import "Trd_Common.proto";
 

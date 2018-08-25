@@ -1,6 +1,8 @@
 syntax = "proto2";
 package Trd_SubAccPush;
 
+option go_package = "github.com/hxhxhx88/futuquant/pb";
+
 import "Common.proto";
 
 message C2S
