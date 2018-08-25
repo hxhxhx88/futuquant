@@ -1,7 +1,7 @@
 syntax = "proto2";
 package Trd_GetAccList;
 
-option go_package = "github.com/hxhxhx88/futuquant/pb";
+option go_package = "github.com/hxhxhx88/futuquant/pb/trade/GetAccList";
 
 import "Common.proto";
 import "Trd_Common.proto";

@@ -1,7 +1,7 @@
 syntax = "proto2";
 package Trd_PlaceOrder;
 
-option go_package = "github.com/hxhxhx88/futuquant/pb";
+option go_package = "github.com/hxhxhx88/futuquant/pb/trade/PlaceOrder";
 
 import "Common.proto";
 import "Trd_Common.proto";

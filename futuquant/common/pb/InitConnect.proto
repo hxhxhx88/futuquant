@@ -1,7 +1,7 @@
 syntax = "proto2";
 package InitConnect;
 
-option go_package = "github.com/hxhxhx88/futuquant/pb";
+option go_package = "github.com/hxhxhx88/futuquant/pb/InitConnect";
 
 import "Common.proto";
 

@@ -1,7 +1,7 @@
 syntax = "proto2";
 package Common;
 
-option go_package = "github.com/hxhxhx88/futuquant/pb";
+option go_package = "github.com/hxhxhx88/futuquant/pb/Common";
 
 //返回结果
 enum RetType

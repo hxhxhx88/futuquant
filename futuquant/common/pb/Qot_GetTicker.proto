@@ -1,7 +1,7 @@
 syntax = "proto2";
 package Qot_GetTicker;
 
-option go_package = "github.com/hxhxhx88/futuquant/pb";
+option go_package = "github.com/hxhxhx88/futuquant/pb/quote/GetTicker";
 
 import "Common.proto";
 import "Qot_Common.proto";

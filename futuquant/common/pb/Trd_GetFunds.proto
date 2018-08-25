@@ -1,7 +1,7 @@
 syntax = "proto2";
 package Trd_GetFunds;
 
-option go_package = "github.com/hxhxhx88/futuquant/pb";
+option go_package = "github.com/hxhxhx88/futuquant/pb/trade/GetFunds";
 
 import "Common.proto";
 import "Trd_Common.proto";

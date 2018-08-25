@@ -1,7 +1,7 @@
 syntax = "proto2";
 package Trd_Common;
 
-option go_package = "github.com/hxhxhx88/futuquant/pb";
+option go_package = "github.com/hxhxhx88/futuquant/pb/trade/Common";
 
 import "Common.proto";
 
