@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import hashlib, json, os, sys, socket, traceback, time, struct
+import hashlib, json, os, sys, socket, traceback, time, struct, collections
 from datetime import datetime, timedelta
 from struct import calcsize
 from google.protobuf.json_format import MessageToJson
@@ -11,6 +11,9 @@ from futuquant.common.conn_mng import *
 from futuquant.common.sys_config import *
 from futuquant.common.pbjson import json2pb
 from futuquant.common.ft_logger import logger
+
+
+ProtoInfo = collections.namedtuple('ProtoInfo', ['proto_id', 'serial_no'])
 
 
 def get_message_head_len():
@@ -29,9 +32,7 @@ def check_date_str_format(s, default_time="00:00:00"):
         return RET_OK, dt_obj
 
     except ValueError:
-        traceback.print_exc()
-        err = sys.exc_info()[1]
-        error_str = ERROR_STR_PREFIX + str(err)
+        error_str = ERROR_STR_PREFIX + "wrong time or time format"
         return RET_ERROR, error_str
 
 
@@ -44,7 +45,24 @@ def normalize_date_format(date_str, default_time="00:00:00"):
     return ret_data.strftime("%Y-%m-%d %H:%M:%S")
 
 
-def normalize_start_end_date(start, end, delta_days=0, default_time_start="00:00:00", default_time_end="23:59:59"):
+def normalize_start_end_date(start, end, delta_days=0, default_time_start="00:00:00", default_time_end="23:59:59", prefer_end_now=True):
+    """
+
+    :param start:
+    :param end:
+    :param delta_days:
+    :param default_time_start:
+    :param default_time_end:
+    :param prefer_end_now: 为True时，当start和end都为None时，end设为当前时间，为False则start设为当前时间
+    :return:
+    """
+    if start is not None and is_str(start) is False:
+        error_str = ERROR_STR_PREFIX + "the type of start param is wrong"
+        return RET_ERROR, error_str, None, None
+
+    if end is not None and is_str(end) is False:
+        error_str = ERROR_STR_PREFIX + "the type of end param is wrong"
+        return RET_ERROR, error_str, None, None
 
     dt_start = None
     dt_end = None
@@ -73,10 +91,18 @@ def normalize_start_end_date(start, end, delta_days=0, default_time_start="00:00
         dt_end = datetime(year=dt_tmp.year, month=dt_tmp.month, day=dt_tmp.day, hour=hour_end, minute=min_end, second=sec_end)
 
     if not start and not end:
-        dt_now = datetime.now()
-        dt_end = datetime(year=dt_now.year, month=dt_now.month, day=dt_now.day, hour=hour_end, minute=min_end, second=sec_end)
-        dt_tmp = dt_end - delta
-        dt_start = datetime(year=dt_tmp.year, month=dt_tmp.month, day=dt_tmp.day, hour=hour_start, minute=min_start, second=sec_start)
+        if prefer_end_now:
+            dt_now = datetime.now()
+            dt_end = datetime(year=dt_now.year, month=dt_now.month, day=dt_now.day, hour=hour_end, minute=min_end, second=sec_end)
+            dt_tmp = dt_end - delta
+            dt_start = datetime(year=dt_tmp.year, month=dt_tmp.month, day=dt_tmp.day, hour=hour_start, minute=min_start, second=sec_start)
+        else:
+            dt_now = datetime.now()
+            dt_start = datetime(year=dt_now.year, month=dt_now.month, day=dt_now.day, hour=hour_start, minute=min_start,
+                              second=sec_start)
+            dt_tmp = dt_start + delta
+            dt_end = datetime(year=dt_tmp.year, month=dt_tmp.month, day=dt_tmp.day, hour=hour_end, minute=min_end,
+                                second=sec_end)
 
     start = dt_start.strftime("%Y-%m-%d %H:%M:%S")
     end = dt_end.strftime("%Y-%m-%d %H:%M:%S")
@@ -399,6 +425,20 @@ class ProtobufMap(dict):
         from futuquant.common.pb.Qot_GetReference_pb2 import Response
         ProtobufMap.created_protobuf_map[ProtoId.Qot_GetReference] = Response()
 
+        """ Qot_GetOwnerPlate = 3207 获取股票所属板块"""
+        from futuquant.common.pb.Qot_GetOwnerPlate_pb2 import Response
+        ProtobufMap.created_protobuf_map[ProtoId.Qot_GetOwnerPlate] = Response()
+
+        """ Qot_GetOwnerPlate = 3208 获取高管持股变动"""
+        from futuquant.common.pb.Qot_GetHoldingChangeList_pb2 import Response
+        ProtobufMap.created_protobuf_map[ProtoId.Qot_GetHoldingChangeList] = Response()
+
+        from futuquant.common.pb.Qot_RequestHistoryKL_pb2 import Response
+        ProtobufMap.created_protobuf_map[ProtoId.Qot_RequestHistoryKL] = Response()
+
+        from futuquant.common.pb.Qot_GetOptionChain_pb2 import Response
+        ProtobufMap.created_protobuf_map[ProtoId.Qot_GetOptionChain] = Response()
+
     def __getitem__(self, key):
         return ProtobufMap.created_protobuf_map[key] if key in ProtobufMap.created_protobuf_map else None
 
@@ -415,7 +455,10 @@ def binary2str(b, proto_id, proto_fmt_type):
         return b.decode('utf-8')
     elif proto_fmt_type == ProtoFMT.Protobuf:
         rsp = pb_map[proto_id]
-        rsp.ParseFromString(b)
+        if IS_PY2:
+            rsp.ParseFromString(str(b))
+        else:
+            rsp.ParseFromString(b)
         return MessageToJson(rsp)
     else:
         raise Exception("binary2str: unknown proto format.")
@@ -435,7 +478,10 @@ def binary2pb(b, proto_id, proto_fmt_type):
     elif proto_fmt_type == ProtoFMT.Protobuf:
         rsp.Clear()
         # logger.debug((proto_id))
-        rsp.ParseFromString(b)
+        if IS_PY2:
+            rsp.ParseFromString(str(b))
+        else:
+            rsp.ParseFromString(b)
         return rsp
     else:
         raise Exception("binary2str: unknown proto format.")
@@ -443,18 +489,21 @@ def binary2pb(b, proto_id, proto_fmt_type):
 
 def pack_pb_req(pb_req, proto_id, conn_id, serial_no=0):
     proto_fmt = SysConfig.get_proto_fmt()
+    serial_no = serial_no if serial_no else get_unique_id32()
+    proto_info = ProtoInfo(proto_id, serial_no)
+
     if proto_fmt == ProtoFMT.Json:
         req_json = MessageToJson(pb_req)
         ret, msg, req = _joint_head(proto_id, proto_fmt, len(req_json),
                           req_json.encode(), conn_id, serial_no)
-        return ret, msg, req
+        return ret, msg, proto_info, req
 
     elif proto_fmt == ProtoFMT.Protobuf:
         ret, msg, req = _joint_head(proto_id, proto_fmt, pb_req.ByteSize(), pb_req, conn_id, serial_no)
-        return ret, msg, req
+        return ret, msg, proto_info, req
     else:
         error_str = ERROR_STR_PREFIX + 'unknown protocol format, %d' % proto_fmt
-        return RET_ERROR, error_str, None
+        return RET_ERROR, error_str, None, None
 
 
 def _joint_head(proto_id, proto_fmt_type, body_len, str_body, conn_id, serial_no):
@@ -466,7 +515,7 @@ def _joint_head(proto_id, proto_fmt_type, body_len, str_body, conn_id, serial_no
         str_body = str_body.SerializeToString()
 
     if type(str_body) is not bytes:
-        str_body = bytes(str_body, encoding='utf-8')
+        str_body = bytes_utf8(str_body)
     sha20 = hashlib.sha1(str_body).digest()
 
     # init connect 需要用rsa加密
@@ -482,11 +531,8 @@ def _joint_head(proto_id, proto_fmt_type, body_len, str_body, conn_id, serial_no
 
     fmt = "%s%ds" % (MESSAGE_HEAD_FMT, body_len)
 
-    head_serial_no = serial_no if serial_no else get_unique_id32()
-    # print("serial no = {} proto_id = {}".format(head_serial_no, proto_id))
-
     bin_head = struct.pack(fmt, b'F', b'T', proto_id, proto_fmt_type,
-                           API_PROTO_VER, head_serial_no, body_len, sha20, reserve8, str_body)
+                           API_PROTO_VER, serial_no, body_len, sha20, reserve8, str_body)
 
     return RET_OK, "", bin_head
 
@@ -504,11 +550,10 @@ def decrypt_rsp_body(rsp_body, head_dict, conn_id):
     ret_code = RET_OK
     msg = ''
     sha20 = head_dict['sha20']
+    proto_id = head_dict['proto_id']
 
     if SysConfig.is_proto_encrypt():
         try:
-            proto_id = head_dict['proto_id']
-
             if proto_id == ProtoId.InitConnect:
                 rsp_body = RsaCrypt.decrypt(rsp_body)
             else:
@@ -529,3 +574,14 @@ def decrypt_rsp_body(rsp_body, head_dict, conn_id):
     return ret_code, msg, rsp_body
 
 
+def make_from_namedtuple(t, **kwargs):
+    """
+    t是namedtuple，复制一份t，但其中部分字段更新为kwargs的值
+    :param t:
+    :param kwargs:
+    :return:
+    """
+    d = t._asdict()
+    d.update(kwargs)
+    cls = type(t)
+    return cls(**d)

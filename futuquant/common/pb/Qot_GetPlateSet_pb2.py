@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='Qot_GetPlateSet.proto',
   package='Qot_GetPlateSet',
   syntax='proto2',
-  serialized_pb=_b('\n\x15Qot_GetPlateSet.proto\x12\x0fQot_GetPlateSet\x1a\x0c\x43ommon.proto\x1a\x10Qot_Common.proto\"+\n\x03\x43\x32S\x12\x0e\n\x06market\x18\x01 \x02(\x05\x12\x14\n\x0cplateSetType\x18\x02 \x02(\x05\">\n\tPlateInfo\x12#\n\x05plate\x18\x01 \x02(\x0b\x32\x14.Qot_Common.Security\x12\x0c\n\x04name\x18\x02 \x02(\t\"8\n\x03S2C\x12\x31\n\rplateInfoList\x18\x01 \x03(\x0b\x32\x1a.Qot_GetPlateSet.PlateInfo\",\n\x07Request\x12!\n\x03\x63\x32s\x18\x01 \x02(\x0b\x32\x14.Qot_GetPlateSet.C2S\"e\n\x08Response\x12\x15\n\x07retType\x18\x01 \x02(\x05:\x04-400\x12\x0e\n\x06retMsg\x18\x02 \x01(\t\x12\x0f\n\x07\x65rrCode\x18\x03 \x01(\x05\x12!\n\x03s2c\x18\x04 \x01(\x0b\x32\x14.Qot_GetPlateSet.S2C')
+  serialized_pb=_b('\n\x15Qot_GetPlateSet.proto\x12\x0fQot_GetPlateSet\x1a\x0c\x43ommon.proto\x1a\x10Qot_Common.proto\"+\n\x03\x43\x32S\x12\x0e\n\x06market\x18\x01 \x02(\x05\x12\x14\n\x0cplateSetType\x18\x02 \x02(\x05\"3\n\x03S2C\x12,\n\rplateInfoList\x18\x01 \x03(\x0b\x32\x15.Qot_Common.PlateInfo\",\n\x07Request\x12!\n\x03\x63\x32s\x18\x01 \x02(\x0b\x32\x14.Qot_GetPlateSet.C2S\"e\n\x08Response\x12\x15\n\x07retType\x18\x01 \x02(\x05:\x04-400\x12\x0e\n\x06retMsg\x18\x02 \x01(\t\x12\x0f\n\x07\x65rrCode\x18\x03 \x01(\x05\x12!\n\x03s2c\x18\x04 \x01(\x0b\x32\x14.Qot_GetPlateSet.S2C')
   ,
   dependencies=[Common__pb2.DESCRIPTOR,Qot__Common__pb2.DESCRIPTOR,])
 
@@ -66,44 +66,6 @@ _C2S = _descriptor.Descriptor(
 )
 
 
-_PLATEINFO = _descriptor.Descriptor(
-  name='PlateInfo',
-  full_name='Qot_GetPlateSet.PlateInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='plate', full_name='Qot_GetPlateSet.PlateInfo.plate', index=0,
-      number=1, type=11, cpp_type=10, label=2,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='name', full_name='Qot_GetPlateSet.PlateInfo.name', index=1,
-      number=2, type=9, cpp_type=9, label=2,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=119,
-  serialized_end=181,
-)
-
-
 _S2C = _descriptor.Descriptor(
   name='S2C',
   full_name='Qot_GetPlateSet.S2C',
@@ -130,8 +92,8 @@ _S2C = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=183,
-  serialized_end=239,
+  serialized_start=119,
+  serialized_end=170,
 )
 
 
@@ -161,8 +123,8 @@ _REQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=241,
-  serialized_end=285,
+  serialized_start=172,
+  serialized_end=216,
 )
 
 
@@ -213,16 +175,14 @@ _RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=287,
-  serialized_end=388,
+  serialized_start=218,
+  serialized_end=319,
 )
 
-_PLATEINFO.fields_by_name['plate'].message_type = Qot__Common__pb2._SECURITY
-_S2C.fields_by_name['plateInfoList'].message_type = _PLATEINFO
+_S2C.fields_by_name['plateInfoList'].message_type = Qot__Common__pb2._PLATEINFO
 _REQUEST.fields_by_name['c2s'].message_type = _C2S
 _RESPONSE.fields_by_name['s2c'].message_type = _S2C
 DESCRIPTOR.message_types_by_name['C2S'] = _C2S
-DESCRIPTOR.message_types_by_name['PlateInfo'] = _PLATEINFO
 DESCRIPTOR.message_types_by_name['S2C'] = _S2C
 DESCRIPTOR.message_types_by_name['Request'] = _REQUEST
 DESCRIPTOR.message_types_by_name['Response'] = _RESPONSE
@@ -234,13 +194,6 @@ C2S = _reflection.GeneratedProtocolMessageType('C2S', (_message.Message,), dict(
   # @@protoc_insertion_point(class_scope:Qot_GetPlateSet.C2S)
   ))
 _sym_db.RegisterMessage(C2S)
-
-PlateInfo = _reflection.GeneratedProtocolMessageType('PlateInfo', (_message.Message,), dict(
-  DESCRIPTOR = _PLATEINFO,
-  __module__ = 'Qot_GetPlateSet_pb2'
-  # @@protoc_insertion_point(class_scope:Qot_GetPlateSet.PlateInfo)
-  ))
-_sym_db.RegisterMessage(PlateInfo)
 
 S2C = _reflection.GeneratedProtocolMessageType('S2C', (_message.Message,), dict(
   DESCRIPTOR = _S2C,
