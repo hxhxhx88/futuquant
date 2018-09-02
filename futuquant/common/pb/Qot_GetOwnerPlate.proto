@@ -1,6 +1,8 @@
 syntax = "proto2";
 package Qot_GetOwnerPlate;
 
+option go_package = "github.com/hxhxhx88/futuquant/pb/quote/GetOwnerPlate";
+
 import "Common.proto";
 import "Qot_Common.proto";
 

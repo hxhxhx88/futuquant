@@ -1,6 +1,8 @@
 syntax = "proto2";
 package Qot_GetHoldingChangeList;
 
+option go_package = "github.com/hxhxhx88/futuquant/pb/quote/GetHoldingChangeList";
+
 import "Common.proto";
 import "Qot_Common.proto";
 
